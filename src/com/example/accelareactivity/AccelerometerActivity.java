@@ -18,6 +18,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -149,6 +152,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 								    DrawCircle();
 								    /** 绘制结束后解锁显示在屏幕上 **/
 									mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+									
 								}
 									writeFiletoSdcard(AcceX,AcceY,AcceZ);
 									
@@ -192,7 +196,8 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 	 
 	 private void DrawCircle() {
 		 try{
-				if(mCanvas != null){
+				if(mCanvas != null ){
+					
 					t1.setText("x = " + AcceX +"  y = "+ AcceY+ "  z = "+ AcceZ);
 //					System.out.println("t1= "+ t1.toString());
 					mPaint.setColor(Color.RED);
@@ -216,19 +221,28 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //					int height = getWindowManager().getDefaultDisplay().getHeight();
 //					int width = getWindowManager().getDefaultDisplay().getWidth();
 //					System.out.println("width = "+width +"height = "+ height);
-					if(n >= getWindowManager().getDefaultDisplay().getWidth()){
-						mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-						n = 0;
-						Canvas mCanvas = mSurfaceHolder.lockCanvas(null);
-						mCanvas.drawColor(Color.BLACK);
-					}
+					 if(n >= getWindowManager().getDefaultDisplay().getWidth()){
+							mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+							n = 0;
+//							 mPaint = new Paint();  
+//						     mPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));  
+//						     mCanvas.drawPaint(mPaint);  
+//						     mPaint.setXfermode(new PorterDuffXfermode(Mode.SRC));  
+						       
+						    
+							 mCanvas = mSurfaceHolder.lockCanvas(null);
+							mCanvas.drawColor(Color.BLACK);
+						}
 				}
+				
+				
 		 	}catch(Exception e){
 				e.printStackTrace();
 			}
 			
 			
 		}
+	
 
 		@Override
 		protected void onPause() {
