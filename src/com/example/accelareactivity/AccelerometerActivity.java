@@ -194,7 +194,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 		 try{
 				if(mCanvas != null){
 					t1.setText("x = " + AcceX +"  y = "+ AcceY+ "  z = "+ AcceZ);
-					System.out.println("t1= "+ t1.toString());
+//					System.out.println("t1= "+ t1.toString());
 					mPaint.setColor(Color.RED);
 					mPaint.setTextSize(20);
 					mCanvas.drawText("X方向曲线：" , 0, 130, mPaint);
@@ -211,7 +211,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 					mCanvas.drawCircle(n, 350+AcceZ,1 , mPaint);
 				
 					n=n+3;//闅�涓偣鐢讳竴娆�
-//					System.out.println("n = "+ n);
+					System.out.println("n = "+ n);
 //					mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 //					int height = getWindowManager().getDefaultDisplay().getHeight();
 //					int width = getWindowManager().getDefaultDisplay().getWidth();
@@ -234,6 +234,12 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 		protected void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
+			if(tt!=null){
+				tt.cancel();
+			}
+			if(updateTime!=null){
+				updateTime.cancel();
+			}
 			mSensorManager.unregisterListener(this);
 		}
 
@@ -291,8 +297,8 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 			  /**开始游戏主循环线程**/
 //		    mIsRunning = true;
 //		    /**得到当前屏幕宽高**/
-//		    mScreenWidth =  getWindowManager().getDefaultDisplay().getWidth();
-//		    mScreenHeight =  getWindowManager().getDefaultDisplay().getHeight();
+		    mScreenWidth =  getWindowManager().getDefaultDisplay().getWidth();//800
+		    mScreenHeight =  getWindowManager().getDefaultDisplay().getHeight();//1217
 //		    
 //		    /**得到小球越界区域**/
 ////		    int height = mbitmapBall.getHeight();
@@ -351,7 +357,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 			fos.write(((("  x = " + AcceX + "  y = " + AcceY + "  z = "+ AcceZ).toString())).getBytes());
 	        byte []newLine="\r\n".getBytes();    
 	        fos.write(newLine);
-			fos.close();
+			fos.flush();
 			}catch(Exception e) {
 				e.printStackTrace( );
 			}
