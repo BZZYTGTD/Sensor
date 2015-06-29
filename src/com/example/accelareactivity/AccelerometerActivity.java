@@ -1,9 +1,11 @@
 package com.example.accelareactivity;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -25,6 +27,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -176,7 +179,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 						startYN = false;
 						start.setBackgroundResource(R.drawable.start);
 						try {
-							fos.write((mycalendar.getTime().toString()).getBytes());
+//							fos.write((mycalendar.getTime().toString()).getBytes());
 						    byte []newLine="\r\n".getBytes();    
 				            fos.write(newLine);
 							fos.close();
@@ -190,7 +193,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 					}
 				break;
 			case R.id.show:
-				
+				readFileFromSDcard(fileName2);
 				break;
 				default: 
 					break;
@@ -203,7 +206,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 		 try{
 				if(mCanvas != null ){
 					
-					t1.setText("x = " + AcceX +"  y = "+ AcceY+ "  z = "+ AcceZ);
+					t1.setText("t="+ timer1 + "  x=" + AcceX +"  y="+ AcceY+ "  z="+ AcceZ);
 //					System.out.println("t1= "+ t1.toString());
 					mPaint.setColor(Color.RED);
 					mPaint.setTextSize(20);
@@ -220,12 +223,8 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 					mCanvas.drawText("Z方向曲线：" , 0, 330, mPaint);
 					mCanvas.drawCircle(n, 350+AcceZ,1 , mPaint);
 				
-					n=n+3;//闅�涓偣鐢讳竴娆�
-					System.out.println("n = "+ n);
-//					mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-//					int height = getWindowManager().getDefaultDisplay().getHeight();
-//					int width = getWindowManager().getDefaultDisplay().getWidth();
-//					System.out.println("width = "+width +"height = "+ height);
+					n=n+1;//闅�涓偣鐢讳竴娆�
+//					System.out.println("n = "+ n);
 					 if(n >= getWindowManager().getDefaultDisplay().getWidth()){
 							mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 							n = 0;
@@ -367,13 +366,16 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //			 "acc14.txt","acc15.txt","acc16.txt","acc17.txt","acc18.txt","acc19.txt","acc20.txt"};
 	private String fileName = "acc4.txt";
 	private String SDCardRoot;
+	public static long timer1=0;
 	//文件保存进Sd卡
 	public void writeFiletoSdcard( float fx,float fy,float fz) {
 		try {
 			//鎸囧畾淇濆瓨鏁版嵁鏃朵负杩藉姞鐨勬柟寮�
-			
-			fos.write(((("  x = " + AcceX + "  y = " + AcceY + "  z = "+ AcceZ).toString())).getBytes());
-	        byte []newLine="\r\n".getBytes();    
+			timer1 =SystemClock.uptimeMillis();
+//			fos.write(((("  x = " + AcceX + "  y = " + AcceY + "  z = "+ AcceZ).toString())).getBytes());
+			fos.write((((" "+timer1 + " "+ AcceX + " " + AcceY + " "+ AcceZ).toString())).getBytes());
+
+			byte []newLine="\r\n".getBytes();    
 	        fos.write(newLine);
 			fos.flush();
 			}catch(Exception e) {
@@ -384,21 +386,37 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 	private String 	fileNameLast2  ;
 	 String res = "";
 	private FileInputStream fin;
-	private byte[] X ;
-	private byte[] Y ;
-	private byte[] Z ;
-	private  void readFileFromSDcard(){
+	private String[] T;
+	private String[] X ;
+	private String[] Y ;
+	private String[] Z ;
+	private String txyz;
+	private String[] xyz;
+	private  byte[] buffer;
+	private int count = 0;
+	private  void readFileFromSDcard(String fileName){
 		try {
-			fileNameLast2 =  targetFile.getAbsolutePath()+File.separator+fileName2;
-			fin = new FileInputStream(fileNameLast2);
-			if(fin != null){
-				 int length = fin.available();
-		         byte[] buffer = new byte[length];
-		         fin.read(buffer);
-		         res = EncodingUtils.getString(buffer, "UTF-8");////依Y.txt的编码类型选择合适的编码，如果不调整会乱码
-			}
+			fileNameLast2 =  targetFile.getAbsolutePath()+File.separator+fileName;
+			StringBuffer sb = new StringBuffer();
+			File file = new File(fileNameLast2);
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line ;
 			
-	         fin.close();//关闭资源
+			//line = br.readLine()读取每行的数据
+			while((line = br.readLine())!=null){
+//				String space[] = line.split("\\s+");//正则表达式判断一个空格或多个空格
+//				 txyz = line.split(" ");//str[]里存的就是截取空格之后的字符串
+//				System.out.println("line.length: "+line.length());
+				//以追加的方式把数据都放进StringBuffer里
+					sb.append(line);
+			}
+//			System.out.println("sb:"+sb);
+			//stringbuffer转换成string
+			txyz = sb.toString();
+			System.out.println("txyz :" + txyz);
+//			System.out.println("sb.length"+sb.length());//996
+			br.close();
+//			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -438,11 +456,6 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //	    	mPosY = mScreenBallHeight;
 //	    }
 	    
-	    
-		
-		
-		
-		
 	}
 
 	
