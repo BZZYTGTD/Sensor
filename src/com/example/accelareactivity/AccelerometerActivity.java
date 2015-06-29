@@ -1,15 +1,16 @@
 package com.example.accelareactivity;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
-
-
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.apache.http.util.EncodingUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,10 +19,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -52,7 +49,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 	private StringBuffer str;
 	 private List<Sensor> allSensors;
 	 private Sensor s;
-	 private TextView show;
+//	 private TextView show;
 	 /**小球资源文件**/
 	private Bitmap mbitmapBall;
 	/**小球的坐标位置**/
@@ -62,6 +59,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 	public static final int TIME_IN_FRAME = 50; 
 	private File targetFile ;
 	private ImageButton start;
+	private ImageButton show;
 	private TextView t1;
 	
 	private String fileNameLast;
@@ -88,6 +86,8 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 		 MyClickListener myListener = new MyClickListener();
 		start = (ImageButton)findViewById(R.id.start);
 		start.setOnClickListener(myListener);
+		show = (ImageButton)findViewById(R.id.show);
+		show.setOnClickListener(myListener);
 		mycalendar=Calendar.getInstance();
 		t1 = (TextView)findViewById(R.id.t1);
 		 /**加载小球资源**/
@@ -189,6 +189,11 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 						
 					}
 				break;
+			case R.id.show:
+				
+				break;
+				default: 
+					break;
 			}
 		}
 		 
@@ -228,7 +233,6 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //						     mPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));  
 //						     mCanvas.drawPaint(mPaint);  
 //						     mPaint.setXfermode(new PorterDuffXfermode(Mode.SRC));  
-						       
 						    
 							 mCanvas = mSurfaceHolder.lockCanvas(null);
 							mCanvas.drawColor(Color.BLACK);
@@ -361,7 +365,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //	public static  String[] accFileNames = {"acc1.txt","acc2.txt","acc3.txt","acc4.txt","acc5.txt",
 //			 "acc6.txt","acc7.txt","acc8.txt","acc9.txt","acc10.txt","acc11.txt","acc12.txt","acc13.txt",
 //			 "acc14.txt","acc15.txt","acc16.txt","acc17.txt","acc18.txt","acc19.txt","acc20.txt"};
-	private String fileName = "acc1.txt";
+	private String fileName = "acc4.txt";
 	private String SDCardRoot;
 	//文件保存进Sd卡
 	public void writeFiletoSdcard( float fx,float fy,float fz) {
@@ -376,8 +380,31 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 				e.printStackTrace( );
 			}
 	}
-	 
-	
+	 private String fileName2 = "acc1.txt";
+	private String 	fileNameLast2  ;
+	 String res = "";
+	private FileInputStream fin;
+	private byte[] X ;
+	private byte[] Y ;
+	private byte[] Z ;
+	private  void readFileFromSDcard(){
+		try {
+			fileNameLast2 =  targetFile.getAbsolutePath()+File.separator+fileName2;
+			fin = new FileInputStream(fileNameLast2);
+			if(fin != null){
+				 int length = fin.available();
+		         byte[] buffer = new byte[length];
+		         fin.read(buffer);
+		         res = EncodingUtils.getString(buffer, "UTF-8");////依Y.txt的编码类型选择合适的编码，如果不调整会乱码
+			}
+			
+	         fin.close();//关闭资源
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+        
+	} 
 	
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {

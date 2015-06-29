@@ -90,6 +90,7 @@ public class GetTypeofSensor extends Activity{
 			     str.append(i + "未知传感器"+ "\n");
 			     break;
 			    }
+			  
 			    str.append("设备名称:" + s.getName() + "\n");
 			    str.append("设备版本:" + s.getVersion() + "\n");
 			    str.append("通用类型号:" + s.getType() + "\n");

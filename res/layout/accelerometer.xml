@@ -12,7 +12,7 @@
     />
  <TextView
         android:id="@+id/t1"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
          android:layout_alignParentTop="true"
          android:layout_centerHorizontal="true"
@@ -20,13 +20,22 @@
          android:textColor="#ffffff"
         
          />
+ 
+<ImageButton
+    android:id="@+id/show"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="20dp"
+    android:layout_toRightOf="@+id/start"
+    android:background="@drawable/show" />
 
 <ImageButton
     android:id="@+id/start"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:layout_centerHorizontal="true"
+    android:layout_alignRight="@+id/t1"
     android:background="@drawable/start" />
    
 </RelativeLayout >
