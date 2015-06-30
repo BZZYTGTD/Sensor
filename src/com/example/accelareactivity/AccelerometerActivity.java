@@ -164,7 +164,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 							});
 						}
 					};			
-						updateTime.scheduleAtFixedRate(tt, 0, 100);
+						updateTime.scheduleAtFixedRate(tt, 0, 100);//隔0.1s更新一次
 						//timer2=SystemClock.uptimeMillis();
 					
 					try {
@@ -189,7 +189,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 						}
 						tt.cancel();
 						updateTime.cancel();
-						
+					
 					}
 				break;
 			case R.id.show:
@@ -364,7 +364,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 //	public static  String[] accFileNames = {"acc1.txt","acc2.txt","acc3.txt","acc4.txt","acc5.txt",
 //			 "acc6.txt","acc7.txt","acc8.txt","acc9.txt","acc10.txt","acc11.txt","acc12.txt","acc13.txt",
 //			 "acc14.txt","acc15.txt","acc16.txt","acc17.txt","acc18.txt","acc19.txt","acc20.txt"};
-	private String fileName = "acc4.txt";
+	private String fileName = "acc5.txt";
 	private String SDCardRoot;
 	public static long timer1=0;
 	//文件保存进Sd卡
@@ -430,15 +430,25 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 		
 	}
 
-	
+	private float linear_acceleration[]= new float[3];;
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		final float alpha = 0.8f;
-		AcceX = event.values[0];
-		AcceY = event.values[1];
-		AcceZ = event.values[2];
-		
+//		//没有去处重力的影响
+//		AcceX = event.values[0];
+//		AcceY = event.values[1];
+//		AcceZ = event.values[2];
+		//去处重力影响的三轴数据
+		// Isolate the force of gravity with the low-pass filter.
+		  gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+		  gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+		  gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+
+		  // Remove the gravity contribution with the high-pass filter.
+		  AcceX = event.values[0] - gravity[0];
+		  AcceY = event.values[1] - gravity[1];
+		  AcceZ = event.values[2] - gravity[2];
 	
 //		  //这里乘以2是为了让小球移动的更快
 //	    mPosX -= AcceX * 2;
